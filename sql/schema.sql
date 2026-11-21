@@ -1,10 +1,5 @@
--- =====================================================
---  Taller mecánico "Pistón Riojano" - schema.sql
---  Base de datos: taller_piston (PostgreSQL)
---  Se puede ejecutar más de una vez: primero borra las tablas.
--- =====================================================
 
--- 1) Borrado en orden inverso a las dependencias (hijas primero)
+
 DROP TABLE IF EXISTS detalle_orden;
 DROP TABLE IF EXISTS orden_trabajo;
 DROP TABLE IF EXISTS vehiculo;
@@ -12,13 +7,13 @@ DROP TABLE IF EXISTS repuesto;
 DROP TABLE IF EXISTS mecanico;
 DROP TABLE IF EXISTS cliente;
 
--- 2) Tablas independientes
+-- Tablas
 CREATE TABLE cliente (
-    dni       VARCHAR(10)  PRIMARY KEY,          -- PK: no puede repetirse
+    dni       VARCHAR(10)  PRIMARY KEY,          
     nombre    VARCHAR(50)  NOT NULL,
     apellido  VARCHAR(50)  NOT NULL,
     telefono  VARCHAR(20)  NOT NULL,
-    email     VARCHAR(100)                       -- opcional: admite NULL
+    email     VARCHAR(100)                       
 );
 
 CREATE TABLE mecanico (
@@ -42,7 +37,7 @@ CREATE TABLE repuesto (
     CONSTRAINT ck_repuesto_stock  CHECK (stock_disponible >= 0)
 );
 
--- 3) Vehículos: herencia Auto/Moto en UNA SOLA TABLA (columna "tipo")
+
 CREATE TABLE vehiculo (
     patente           VARCHAR(10)  PRIMARY KEY,
     marca             VARCHAR(50)  NOT NULL,
@@ -65,7 +60,7 @@ CREATE TABLE vehiculo (
         CHECK (cantidad_puertas > 0),
     CONSTRAINT ck_vehiculo_cilindrada
         CHECK (cilindrada > 0),
-    -- Coherencia: un AUTO usa sus campos y no los de moto, y viceversa
+    -- TENER ENCUENTA un auto usa sus campos y no los de moto, y viceversa
     CONSTRAINT ck_vehiculo_coherencia CHECK (
         (tipo = 'AUTO' AND cantidad_puertas IS NOT NULL
                        AND tipo_combustible IS NOT NULL
@@ -77,7 +72,7 @@ CREATE TABLE vehiculo (
     )
 );
 
--- 4) Órdenes de trabajo
+
 CREATE TABLE orden_trabajo (
     numero               SERIAL        PRIMARY KEY,   -- correlativo automático
     fecha_ingreso        DATE          NOT NULL DEFAULT CURRENT_DATE,
@@ -96,7 +91,7 @@ CREATE TABLE orden_trabajo (
         CHECK (estado IN ('PENDIENTE', 'EN_REPARACION', 'FINALIZADA', 'ENTREGADA'))
 );
 
--- 5) Tabla intermedia N:M orden - repuesto (clave compuesta)
+
 CREATE TABLE detalle_orden (
     numero_orden     INT           NOT NULL,
     codigo_repuesto  VARCHAR(20)   NOT NULL,
