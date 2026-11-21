@@ -12,10 +12,10 @@ mecánicos, repuestos y órdenes de trabajo de un taller mecánico.
 | Herramienta | Versión usada | Observación |
 |---|---|---|
 | JDK | 26.0.2 | El proyecto compila con `release 17`, por lo que sirve cualquier JDK 17 o superior |
-| PostgreSQL | [COMPLETAR: versión, ver nota abajo] | Cualquier versión reciente |
+| PostgreSQL | 42.7.4 | Cualquier versión reciente |
 | Maven | El incluido en NetBeans | También funciona un Maven 3.9 o superior |
-| NetBeans | [COMPLETAR: versión] | Opcional: se puede compilar desde la línea de comandos |
-| pgAdmin 4 | [COMPLETAR: versión] | Opcional: se puede usar `psql` |
+| NetBeans | Apache NetBeans IDE 31 
+| pgAdmin 4 | 9.17 
 
 > **Importante:** la primera vez que se compila, Maven descarga el driver de PostgreSQL
 > (`org.postgresql:postgresql:42.7.4`), por lo que **hace falta conexión a internet** en ese momento.
@@ -146,10 +146,4 @@ Las ventanas no ejecutan SQL: usan los DAO. Todas las consultas usan `PreparedSt
 | `relation "cliente" does not exist` | Falta ejecutar `schema.sql` |
 | Maven no encuentra el driver | Falta conexión a internet en la primera compilación |
 
-## 9. Limitaciones conocidas
 
-- Cuando una transacción se deshace, el número de orden que reservó la base no se reutiliza: los
-  números son únicos y crecientes, pero pueden tener saltos.
-- Los importes se manejan con `double` en el modelo, según el diagrama de clases (en la base son `NUMERIC`).
-- La lista de clientes de la ventana de vehículos no se refresca sola si se agregan clientes con esa
-  ventana abierta: se cierra y se vuelve a abrir.
