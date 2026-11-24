@@ -13,17 +13,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * RF2: alta y listado de los vehiculos de un cliente elegido en un JComboBox.
- * Segun se elija Auto o Moto, se habilitan los campos propios de cada tipo.
- */
 public class FrmVehiculos extends javax.swing.JInternalFrame {
 
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private final VehiculoDAO vehiculoDAO = new VehiculoDAO();
     private DefaultTableModel modeloTabla;
 
-    /** Creates new form FrmVehiculos */
     public FrmVehiculos() {
         initComponents();
         configurarComponentes();
@@ -316,8 +311,7 @@ public class FrmVehiculos extends javax.swing.JInternalFrame {
             mostrarErrorBD(e);
         }
     }
-     // Se llama cuando la ventana ya estaba abierta y se vuelve a ella:
-    // vuelve a leer los clientes (por si hay uno nuevo) y mantiene el que estaba elegido
+    // refresca clientes manteniendo el seleccionado
     public void recargarClientes() {
         Cliente elegido = (Cliente) jcbCliente.getSelectedItem();
         cargarClientes();

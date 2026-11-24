@@ -14,15 +14,6 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * RF4: nueva orden de trabajo. Se elige vehiculo y mecanico, se cargan la
- * descripcion y
- * las horas, y se agregan repuestos con su cantidad en una tabla de detalle que
- * muestra
- * subtotales y el total. Al guardar, la orden, su detalle y el descuento de
- * stock se
- * graban en una unica transaccion (la hace OrdenDAO).
- */
 public class FrmNuevaOrden extends javax.swing.JInternalFrame {
 
     private final VehiculoDAO vehiculoDAO = new VehiculoDAO();
@@ -30,12 +21,10 @@ public class FrmNuevaOrden extends javax.swing.JInternalFrame {
     private final RepuestoDAO repuestoDAO = new RepuestoDAO();
     private final OrdenDAO ordenDAO = new OrdenDAO();
 
-    // Orden en curso: null hasta que se agrega el primer repuesto o se define la
-    // cabecera
+    // orden activa en el formulario
     private OrdenTrabajo orden = null;
     private DefaultTableModel modeloDetalle;
 
-    /** Creates new form FrmNuevaOrden */
     public FrmNuevaOrden() {
         initComponents();
         modeloDetalle = (DefaultTableModel) jtDetalle.getModel();
@@ -224,8 +213,6 @@ public class FrmNuevaOrden extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbAgregarRepuestoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jbAgregarRepuestoActionPerformed
-        // 1) Primero se valida el repuesto y la cantidad (si están mal, no se toca nada
-        // más)
         Repuesto repuesto = (Repuesto) jcbRepuesto.getSelectedItem();
         Integer cantidad = parsearEntero(jtfCantidad.getText());
 
@@ -234,7 +221,7 @@ public class FrmNuevaOrden extends javax.swing.JInternalFrame {
             return;
         }
 
-        // 2) Recién ahora se valida la cabecera y se crea la orden
+        // si es el primer item, crea la orden con la cabecera
         if (orden == null) {
             Vehiculo vehiculo = (Vehiculo) jcbVehiculo.getSelectedItem();
             Mecanico mecanico = (Mecanico) jcbMecanico.getSelectedItem();
@@ -250,7 +237,7 @@ public class FrmNuevaOrden extends javax.swing.JInternalFrame {
             bloquearCabecera(true);
         }
 
-        // 3) Se agrega el repuesto a la orden
+        // suma el repuesto al detalle
         try {
             orden.agregarRepuesto(repuesto, cantidad);
             refrescarDetalle();
@@ -335,9 +322,7 @@ public class FrmNuevaOrden extends javax.swing.JInternalFrame {
         mostrarStockDelRepuesto();
     }
 
-    // Se llama cuando la ventana ya estaba abierta y se vuelve a ella.
-    // Solo recarga si no hay una orden en curso, para no perder lo que se está
-    // cargando.
+    // recarga combos solo si no hay una carga a medias
     public void recargarCombos() {
         if (orden == null) {
             cargarCombos();

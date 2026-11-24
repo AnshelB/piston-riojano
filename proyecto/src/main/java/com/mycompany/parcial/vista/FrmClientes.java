@@ -7,16 +7,11 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * RF1: alta, modificacion, baja y listado de clientes.
- * La ventana no ejecuta SQL: todo pasa por ClienteDAO.
- */
 public class FrmClientes extends javax.swing.JInternalFrame {
 
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private DefaultTableModel modeloTabla;
 
-    /** Creates new form FrmClientes */
     public FrmClientes() {
         initComponents();
         configurarTabla();

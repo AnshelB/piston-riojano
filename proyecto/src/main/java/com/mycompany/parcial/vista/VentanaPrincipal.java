@@ -3,22 +3,15 @@ package com.mycompany.parcial.vista;
 import java.beans.PropertyVetoException;
 import javax.swing.JOptionPane;
 
-/**
- * Ventana principal de la aplicacion (MDI).
- * Armada con el diseñador de NetBeans: el escritorio (JDesktopPane) ocupa toda la
- * ventana y en el medio tiene un panel de inicio con los accesos a cada formulario.
- * Arriba queda la barra de menu con los mismos accesos y sus atajos.
- */
 public class VentanaPrincipal extends javax.swing.JFrame {
 
-    // Una referencia por formulario para no abrir dos veces la misma ventana
+    // referencias para no duplicar ventanas
     private FrmClientes ventanaClientes;
     private FrmVehiculos ventanaVehiculos;
     private FrmRepuestos ventanaRepuestos;
     private FrmNuevaOrden ventanaNuevaOrden;
     private FrmOrdenes ventanaOrdenes;
 
-    /** Creates new form VentanaPrincipal */
     public VentanaPrincipal() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
@@ -247,8 +240,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    // ---------- Eventos de los botones del panel de inicio ----------
-
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
         abrirClientes();
     }//GEN-LAST:event_btnClientesActionPerformed
@@ -272,8 +263,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         salir();
     }//GEN-LAST:event_btnSalirActionPerformed
-
-    // ---------- Eventos del menu ----------
 
     private void jmiClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiClientesActionPerformed
         abrirClientes();
@@ -299,20 +288,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         salir();
     }//GEN-LAST:event_jmiSalirActionPerformed
 
-    // Se ejecuta al apretar la X de la ventana
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         salir();
     }//GEN-LAST:event_formWindowClosing
 
-    // Se ejecuta cada vez que cambia el tamaño del escritorio (al abrir, maximizar o achicar):
-    // vuelve a calcular la posicion del panel de inicio para que quede en el centro
+    // centrar panel si cambia el tamaño de ventana
     private void escritorioComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_escritorioComponentResized
         int x = (escritorio.getWidth() - pnlInicio.getWidth()) / 2;
         int y = (escritorio.getHeight() - pnlInicio.getHeight()) / 2;
         pnlInicio.setLocation(x, y);
     }//GEN-LAST:event_escritorioComponentResized
-
-    // ---------- Metodos propios ----------
 
     private void salir() {
         int r = JOptionPane.showConfirmDialog(this, "¿Desea salir de la aplicación?",
@@ -322,7 +307,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }
 
-    // Cada metodo abre su formulario solo si no esta abierto; si ya lo esta, lo trae al frente
+    // si ya estaba abierta la trae al frente
     private void abrirClientes() {
         if (ventanaClientes == null || ventanaClientes.isClosed()) {
             ventanaClientes = new FrmClientes();

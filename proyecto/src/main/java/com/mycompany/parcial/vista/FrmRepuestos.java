@@ -10,17 +10,12 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * RF3: listado de repuestos con su stock actual y actualizacion de precio y stock.
- * La ventana no ejecuta SQL: todo pasa por RepuestoDAO.
- */
 public class FrmRepuestos extends javax.swing.JInternalFrame {
 
     private final RepuestoDAO repuestoDAO = new RepuestoDAO();
     private List<Repuesto> repuestos = new ArrayList<>();
     private DefaultTableModel modeloTabla;
 
-    /** Creates new form FrmRepuestos */
     public FrmRepuestos() {
         initComponents();
         modeloTabla = (DefaultTableModel) jtRepuestos.getModel();

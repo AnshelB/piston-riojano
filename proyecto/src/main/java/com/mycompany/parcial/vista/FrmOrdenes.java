@@ -12,10 +12,6 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * RF5: consulta de ordenes filtrando por estado (numero, fecha, patente,
- * mecanico y total) y cambio de estado de la orden seleccionada.
- */
 public class FrmOrdenes extends javax.swing.JInternalFrame {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -24,7 +20,6 @@ public class FrmOrdenes extends javax.swing.JInternalFrame {
     private List<OrdenTrabajo> ordenes = new ArrayList<>();
     private DefaultTableModel modeloTabla;
 
-    /** Creates new form FrmOrdenes */
     public FrmOrdenes() {
         initComponents();
         configurarComponentes();
