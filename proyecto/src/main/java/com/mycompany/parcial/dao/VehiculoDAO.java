@@ -1,10 +1,5 @@
 package com.mycompany.parcial.dao;
 
-import com.mycompany.parcial.modelo.Auto;
-import com.mycompany.parcial.modelo.Cliente;
-import com.mycompany.parcial.modelo.Moto;
-import com.mycompany.parcial.modelo.TipoCombustible;
-import com.mycompany.parcial.modelo.Vehiculo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,13 +8,16 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Acceso a datos de la tabla vehiculo. Auto y Moto conviven en una sola tabla
- * (columna "tipo"): al leer, el DAO decide qué objeto crear.
- */
+import com.mycompany.parcial.modelo.Auto;
+import com.mycompany.parcial.modelo.Cliente;
+import com.mycompany.parcial.modelo.Moto;
+import com.mycompany.parcial.modelo.TipoCombustible;
+import com.mycompany.parcial.modelo.Vehiculo;
+
+
 public class VehiculoDAO {
 
-    // Consulta base: trae también los datos del dueño para armar el objeto Cliente
+    // Trae también los datos del dueño para armar el objeto Cliente
     private static final String SELECT_BASE =
             "SELECT v.patente, v.marca, v.modelo, v.anio, v.tipo, "
             + "v.cantidad_puertas, v.tipo_combustible, v.cilindrada, "
@@ -38,7 +36,6 @@ public class VehiculoDAO {
             ps.setInt(4, v.getAnio());
             ps.setString(5, v.getCliente().getDni());
 
-            // Para grabar sí hace falta saber el tipo concreto (qué columnas se llenan)
             if (v instanceof Auto auto) {
                 ps.setString(6, "AUTO");
                 ps.setInt(7, auto.getCantidadPuertas());
@@ -56,7 +53,6 @@ public class VehiculoDAO {
         }
     }
 
-    // Devuelve el vehículo, o null si no existe (sirve para detectar patentes repetidas)
     public Vehiculo buscarPorPatente(String patente) throws SQLException {
         String sql = SELECT_BASE + "WHERE v.patente = ?";
         try (Connection con = Conexion.getConexion();
@@ -86,7 +82,6 @@ public class VehiculoDAO {
         return vehiculos;
     }
 
-    // Se usa en la ventana de nueva orden, para elegir el vehículo
     public List<Vehiculo> listarTodos() throws SQLException {
         String sql = SELECT_BASE + "ORDER BY v.patente";
         List<Vehiculo> vehiculos = new ArrayList<>();
@@ -100,7 +95,7 @@ public class VehiculoDAO {
         return vehiculos;
     }
 
-    // Convierte la fila actual en un Auto o una Moto, según la columna "tipo"
+    // Convierte la fila en un Auto o Moto según la columna "tipo"
     private Vehiculo armarVehiculo(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente(
                 rs.getString("dni"),

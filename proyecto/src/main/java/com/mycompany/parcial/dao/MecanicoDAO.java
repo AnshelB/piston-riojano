@@ -1,7 +1,5 @@
 package com.mycompany.parcial.dao;
 
-import com.mycompany.parcial.modelo.Especialidad;
-import com.mycompany.parcial.modelo.Mecanico;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,12 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Acceso a datos de la tabla mecanico.
- */
+import com.mycompany.parcial.modelo.Especialidad;
+import com.mycompany.parcial.modelo.Mecanico;
+
 public class MecanicoDAO {
 
-    // Se usa en la ventana de nueva orden, para elegir el mecánico responsable
     public List<Mecanico> listar() throws SQLException {
         String sql = "SELECT legajo, nombre, apellido, especialidad, valor_hora "
                 + "FROM mecanico ORDER BY apellido, nombre";
@@ -29,7 +26,7 @@ public class MecanicoDAO {
         return mecanicos;
     }
 
-    // Devuelve el mecánico, o null si no existe (lo usará OrdenDAO al leer una orden)
+    // Devuelve el mecánico, o null si no existe
     public Mecanico buscarPorLegajo(int legajo) throws SQLException {
         String sql = "SELECT legajo, nombre, apellido, especialidad, valor_hora "
                 + "FROM mecanico WHERE legajo = ?";

@@ -1,6 +1,5 @@
 package com.mycompany.parcial.dao;
 
-import com.mycompany.parcial.modelo.Repuesto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Acceso a datos de la tabla repuesto.
- */
+import com.mycompany.parcial.modelo.Repuesto;
+
 public class RepuestoDAO {
 
     public List<Repuesto> listar() throws SQLException {
@@ -27,7 +25,6 @@ public class RepuestoDAO {
         return repuestos;
     }
 
-    // Devuelve el repuesto, o null si no existe
     public Repuesto buscarPorCodigo(String codigo) throws SQLException {
         String sql = "SELECT codigo, descripcion, precio_unitario_actual, stock_disponible "
                 + "FROM repuesto WHERE codigo = ?";
@@ -43,7 +40,6 @@ public class RepuestoDAO {
         }
     }
 
-    // Actualiza precio y stock del repuesto indicado por su código (RF3)
     public void actualizar(Repuesto r) throws SQLException {
         String sql = "UPDATE repuesto SET precio_unitario_actual = ?, stock_disponible = ? "
                 + "WHERE codigo = ?";

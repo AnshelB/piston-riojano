@@ -7,10 +7,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * Gestiona la conexion a la base de datos PostgreSQL.
- * Carga las credenciales de conexion desde db.properties en resources.
- */
 public class Conexion {
 
     private static String url;

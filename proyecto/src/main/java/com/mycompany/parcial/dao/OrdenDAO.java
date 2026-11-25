@@ -1,12 +1,5 @@
 package com.mycompany.parcial.dao;
 
-import com.mycompany.parcial.modelo.DetalleOrden;
-import com.mycompany.parcial.modelo.EstadoOrden;
-import com.mycompany.parcial.modelo.Mecanico;
-import com.mycompany.parcial.modelo.OrdenTrabajo;
-import com.mycompany.parcial.modelo.Repuesto;
-import com.mycompany.parcial.modelo.StockInsuficienteException;
-import com.mycompany.parcial.modelo.Vehiculo;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -15,41 +8,43 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Acceso a datos de las órdenes de trabajo y sus detalles.
- */
+import com.mycompany.parcial.modelo.DetalleOrden;
+import com.mycompany.parcial.modelo.EstadoOrden;
+import com.mycompany.parcial.modelo.Mecanico;
+import com.mycompany.parcial.modelo.OrdenTrabajo;
+import com.mycompany.parcial.modelo.Repuesto;
+import com.mycompany.parcial.modelo.StockInsuficienteException;
+import com.mycompany.parcial.modelo.Vehiculo;
+
 public class OrdenDAO {
 
     private final VehiculoDAO vehiculoDAO = new VehiculoDAO();
     private final MecanicoDAO mecanicoDAO = new MecanicoDAO();
 
-    // ------------------------------------------------------------------
-    //  RF4: guardar la orden, su detalle y el descuento de stock
-    //  en UNA SOLA TRANSACCIÓN: o se graba todo, o no se graba nada.
-    // ------------------------------------------------------------------
+    // Guarda la orden, sus detalles y descuenta stock en una sola transacción
     public void guardar(OrdenTrabajo orden) throws SQLException, StockInsuficienteException {
         try (Connection con = Conexion.getConexion()) {
-            con.setAutoCommit(false);   // desde acá, nada es definitivo hasta el commit
+            con.setAutoCommit(false);
             try {
                 insertarCabecera(con, orden);
                 for (DetalleOrden d : orden.getDetalles()) {
                     descontarStock(con, d);
                     insertarDetalle(con, orden.getNumero(), d);
                 }
-                con.commit();           // todo salió bien: se confirma
+                con.commit();
             } catch (SQLException | StockInsuficienteException e) {
-                con.rollback();         // algo falló: se deshace TODO lo anterior
-                orden.setNumero(0);     // la orden no quedó guardada
-                throw e;                // la ventana mostrará el mensaje al usuario
+                con.rollback();
+                orden.setNumero(0);
+                throw e;
             }
         }
     }
 
+    // Recupera el número autogenerado para usarlo como FK en los detalles
     private void insertarCabecera(Connection con, OrdenTrabajo o) throws SQLException {
         String sql = "INSERT INTO orden_trabajo (fecha_ingreso, descripcion_problema, "
                 + "horas_mano_obra, estado, patente, legajo_mecanico) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
-        // Se pide a la base el número generado (SERIAL) para usarlo en los detalles
         try (PreparedStatement ps = con.prepareStatement(sql, new String[]{"numero"})) {
             ps.setDate(1, Date.valueOf(o.getFechaIngreso()));
             ps.setString(2, o.getDescripcionProblema());
@@ -65,7 +60,6 @@ public class OrdenDAO {
         }
     }
 
-    // El UPDATE solo se aplica si el stock alcanza; si no, no toca ninguna fila
     private void descontarStock(Connection con, DetalleOrden d)
             throws SQLException, StockInsuficienteException {
         String sql = "UPDATE repuesto SET stock_disponible = stock_disponible - ? "
@@ -94,9 +88,7 @@ public class OrdenDAO {
         }
     }
 
-    // ------------------------------------------------------------------
-    //  RF5: consulta de órdenes (estado == null devuelve todas)
-    // ------------------------------------------------------------------
+    // Si estado es null, trae todas las órdenes; si no, filtra por ese estado
     public List<OrdenTrabajo> listar(EstadoOrden estado) throws SQLException {
         String sql = "SELECT numero, fecha_ingreso, descripcion_problema, horas_mano_obra, "
                 + "estado, patente, legajo_mecanico FROM orden_trabajo ";
@@ -131,7 +123,7 @@ public class OrdenDAO {
         return ordenes;
     }
 
-    // Lee los repuestos usados, con el precio que se aplicó en su momento
+   
     private void cargarDetalles(OrdenTrabajo orden) throws SQLException {
         String sql = "SELECT d.cantidad, d.precio_aplicado, r.codigo, r.descripcion, "
                 + "r.precio_unitario_actual, r.stock_disponible "
@@ -155,7 +147,6 @@ public class OrdenDAO {
         }
     }
 
-    // Guarda el estado actual de la orden (RF5: cambiar el estado de la orden seleccionada)
     public void actualizarEstado(OrdenTrabajo orden) throws SQLException {
         String sql = "UPDATE orden_trabajo SET estado = ? WHERE numero = ?";
         try (Connection con = Conexion.getConexion();

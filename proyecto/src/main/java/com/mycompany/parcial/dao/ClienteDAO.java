@@ -1,6 +1,5 @@
 package com.mycompany.parcial.dao;
 
-import com.mycompany.parcial.modelo.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,12 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Acceso a datos de la tabla cliente.
- * Todos los métodos usan PreparedStatement y cierran sus recursos solos
- * (try-with-resources). Los errores SQL se propagan: los atrapa la ventana
- * y se los muestra al usuario con un JOptionPane.
- */
+import com.mycompany.parcial.modelo.Cliente;
+
+
 public class ClienteDAO {
 
     public void insertar(Cliente c) throws SQLException {
@@ -25,12 +21,12 @@ public class ClienteDAO {
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getApellido());
             ps.setString(4, c.getTelefono());
-            ps.setString(5, c.getEmail());   // null se guarda como NULL
+            ps.setString(5, c.getEmail());
             ps.executeUpdate();
         }
     }
 
-    // El DNI es la clave primaria: identifica a qué cliente se modifica y no se cambia
+    // El DNI identifica al cliente y no se modifica
     public void modificar(Cliente c) throws SQLException {
         String sql = "UPDATE cliente SET nombre = ?, apellido = ?, telefono = ?, email = ? "
                 + "WHERE dni = ?";
@@ -45,7 +41,7 @@ public class ClienteDAO {
         }
     }
 
-    // Si el cliente tiene vehículos, la FK de la base también rechaza el borrado
+    // Si el cliente tiene vehículos, la FK rechaza el borrado
     public void eliminar(String dni) throws SQLException {
         String sql = "DELETE FROM cliente WHERE dni = ?";
         try (Connection con = Conexion.getConexion();
@@ -55,6 +51,7 @@ public class ClienteDAO {
         }
     }
 
+    // Verifica si el cliente tiene vehículos asociados
     public boolean tieneVehiculos(String dni) throws SQLException {
         String sql = "SELECT COUNT(*) FROM vehiculo WHERE dni_cliente = ?";
         try (Connection con = Conexion.getConexion();
@@ -96,7 +93,7 @@ public class ClienteDAO {
         return clientes;
     }
 
-    // Convierte la fila actual del ResultSet en un objeto Cliente
+    // Convierte una fila del ResultSet en un objeto Cliente
     private Cliente armarCliente(ResultSet rs) throws SQLException {
         return new Cliente(
                 rs.getString("dni"),
