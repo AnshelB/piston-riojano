@@ -38,10 +38,8 @@ public class Repuesto {
         this.stockDisponible = stockDisponible;
     }
 
-    /**
-     * Descuenta stock. Si no alcanza, no modifica nada y lanza la excepción propia.
-     */
-   public boolean tieneStock(int cantidad) {
+
+    public boolean tieneStock(int cantidad) {
     return cantidad <= stockDisponible;
     }
 
@@ -54,10 +52,10 @@ public class Repuesto {
                     + "\": disponible " + stockDisponible + ", solicitado " + cantidad);
         }
         stockDisponible -= cantidad;
-    }
+    } //siempre antes de descontar stock se debe verificar si tiene stock
 
     @Override
     public String toString() {
         return codigo + " - " + descripcion;
-    }
+    } 
 }
