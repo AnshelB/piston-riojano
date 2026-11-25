@@ -1,0 +1,5 @@
+# Ejemplo de configuracion de conexion para la base de datos PostgreSQL
+# Copiar este archivo como db.properties y colocar su clave local
+db.url=jdbc:postgresql://localhost:5432/taller_piston
+db.user=postgres
+db.password=TU_PASSWORD_AQUI
